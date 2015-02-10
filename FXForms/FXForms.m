@@ -3009,8 +3009,7 @@ static void FXFormPreprocessFieldDictionary(NSMutableDictionary *dictionary)
     static UITextView *textView;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        textView = [[UITextView alloc] init];
-        textView.font = [UIFont systemFontOfSize:17];
+        textView = [self textViewForSizing];
     });
     
     textView.text = [field fieldDescription] ?: @" ";
@@ -3019,6 +3018,13 @@ static void FXFormPreprocessFieldDictionary(NSMutableDictionary *dictionary)
     CGFloat height = [field.title length]? 21: 0; // label height
     height += FXFormFieldPaddingTop + ceilf(textViewSize.height) + FXFormFieldPaddingBottom;
     return height;
+}
+
++ (UITextView *)textViewForSizing
+{
+    UITextView *textView = [[UITextView alloc] init];
+    textView.font = [UIFont systemFontOfSize:17];
+    return textView;
 }
 
 - (void)setUp
