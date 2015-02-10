@@ -3006,12 +3006,7 @@ static void FXFormPreprocessFieldDictionary(NSMutableDictionary *dictionary)
 
 + (CGFloat)heightForField:(FXFormField *)field width:(CGFloat)width
 {
-    static UITextView *textView;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        textView = [self textViewForSizing];
-    });
-    
+    UITextView *textView = [self textViewForSizing];
     textView.text = [field fieldDescription] ?: @" ";
     CGSize textViewSize = [textView sizeThatFits:CGSizeMake(width - FXFormFieldPaddingLeft - FXFormFieldPaddingRight, FLT_MAX)];
     
@@ -3022,8 +3017,13 @@ static void FXFormPreprocessFieldDictionary(NSMutableDictionary *dictionary)
 
 + (UITextView *)textViewForSizing
 {
-    UITextView *textView = [[UITextView alloc] init];
-    textView.font = [UIFont systemFontOfSize:17];
+    static UITextView *textView;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        textView = [[UITextView alloc] init];
+        textView.font = [UIFont systemFontOfSize:17];
+    });
+    
     return textView;
 }
 
