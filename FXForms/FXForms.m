@@ -3002,7 +3002,9 @@ static void FXFormPreprocessFieldDictionary(NSMutableDictionary *dictionary)
 @end
 
 
-@implementation FXFormTextViewCell
+@implementation FXFormTextViewCell {
+    CGFloat _lastHeight;
+}
 
 + (CGFloat)heightForField:(FXFormField *)field width:(CGFloat)width
 {
@@ -3152,8 +3154,14 @@ static void FXFormPreprocessFieldDictionary(NSMutableDictionary *dictionary)
     
     //resize the tableview if required
     UITableView *tableView = [self tableView];
-    [tableView beginUpdates];
-    [tableView endUpdates];
+    CGFloat height = [[self class] heightForField:self.field width:self.tableView.frame.size.width];
+
+    if (fabs(_lastHeight - height) >= 1.f) {
+        _lastHeight = height;
+        
+        [tableView beginUpdates];
+        [tableView endUpdates];
+    }
     
     //scroll to show cursor
     CGRect cursorRect = [self.textView caretRectForPosition:self.textView.selectedTextRange.end];
