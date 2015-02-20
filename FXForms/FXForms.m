@@ -3140,6 +3140,24 @@ static void FXFormPreprocessFieldDictionary(NSMutableDictionary *dictionary)
     }
 }
 
+- (void)resize
+{
+    //resize the tableview if required
+    UITableView *tableView = [self tableView];
+    CGFloat height = [[self class] heightForField:self.field width:self.tableView.frame.size.width];
+    
+    if (fabs(_lastHeight - height) >= 1.f) {
+        _lastHeight = height;
+        
+        [tableView beginUpdates];
+        [tableView endUpdates];
+    }
+    
+    //scroll to show cursor
+    CGRect cursorRect = [self.textView caretRectForPosition:self.textView.selectedTextRange.end];
+    [tableView scrollRectToVisible:[tableView convertRect:cursorRect fromView:self.textView] animated:YES];
+}
+
 - (void)textViewDidBeginEditing:(__unused UITextView *)textView
 {
     [self.textView selectAll:nil];
@@ -3152,20 +3170,7 @@ static void FXFormPreprocessFieldDictionary(NSMutableDictionary *dictionary)
     //show/hide placeholder
     self.detailTextLabel.hidden = ([textView.text length] > 0);
     
-    //resize the tableview if required
-    UITableView *tableView = [self tableView];
-    CGFloat height = [[self class] heightForField:self.field width:self.tableView.frame.size.width];
-
-    if (fabs(_lastHeight - height) >= 1.f) {
-        _lastHeight = height;
-        
-        [tableView beginUpdates];
-        [tableView endUpdates];
-    }
-    
-    //scroll to show cursor
-    CGRect cursorRect = [self.textView caretRectForPosition:self.textView.selectedTextRange.end];
-    [tableView scrollRectToVisible:[tableView convertRect:cursorRect fromView:self.textView] animated:YES];
+    [self resize];
 }
 
 - (void)textViewDidEndEditing:(__unused UITextView *)textView
